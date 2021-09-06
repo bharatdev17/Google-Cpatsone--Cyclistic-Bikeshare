@@ -1,0 +1,327 @@
+---
+title: "Google Capstone - Cyclistic Bike Share"
+author: "Bharat"
+date: "01/09/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Introduction 
+
+This is a case study on Cyclistic(Fictional Company) bike-share analysis part of Google Data Analytics Professional Certificate. FOr this project I'm a junior data analyst working in the marketing analyst team at Cyclistic, a bike-share company in Chicago. The director of marketing believes the company’s future success depends on maximizing the number of annual memberships. Therefore we need to understand how casual riders and annual members use Cyclistic bikes differently. From these insights,and design a new marketing strategy to convert casual riders into annual members. 
+
+# Business Task
+
+There are two types of members casual members and annual members. The goal is to maximize the number of annual memberships.  
+
+# Objective
+
+Our task is to understand how casual riders and annual members use Cyclistic bikes differently and develop insights for designing a new marketing strategy to convert casual riders into annual members.
+
+## About Cyclistic
+
+Cyclistic: A bike-share program that features more than 5,800 bicycles and 600 docking stations. Cyclistic sets itself apart by also offering reclining bikes, hand tricycles, and cargo bikes, making bike-share more inclusive to people with disabilities and riders who can’t use a standard two-wheeled bike. The majority of riders opt for traditional bikes; about 8% of riders use the assistive options. Cyclistic users are more likely to ride for leisure, but about 30% use them to commute to work each day.
+
+## Datasets
+
+For this Capstone I have taken 12 months Cyclistic trip data which are made available i.e from August'20 to July'21. This can be used to answer our Business task and analyse how the members are using cyclistic bikes.
+
+## Load Libraries
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(janitor)
+```
+## Loading Datasets
+
+```{r}
+setwd("C:/Users/DELL/Desktop/Capstone Project/Data(csv)")
+Aug20 <- read.csv("August_20.csv")
+Sep20 <- read_csv("Sep_20.csv")
+Oct20 <- read_csv("Oct_20.csv")
+Nov20 <- read_csv("Nov_20.csv")
+Dec20 <- read_csv("Dec_20.csv")
+Jan21 <- read_csv("Jan_21.csv")
+Feb21<- read_csv("Feb_21.csv")
+Mar21<- read_csv("March_21.csv")
+Apr21<- read_csv("April_21.csv")
+May21<- read_csv("May_21.csv")
+Jun21<- read_csv("June_21.csv")
+Jul21<- read_csv("July_21.csv")
+```
+
+## Data Cleaning
+
+```{r}
+colnames(Aug20)
+colnames(Sep20)
+colnames(Oct20)
+colnames(Nov20)
+colnames(Dec20)
+colnames(Jan21)
+colnames(Feb21)
+colnames(Mar21)
+colnames(Apr21)
+colnames(May21)
+colnames(Jun21)
+colnames(Jul21)
+```
+### Removing extra columns
+```{r}
+Aug20 <- Aug20[-c(14)]
+Sep20 <- Sep20[-c(14)]
+Oct20 <- Oct20[-c(14)]
+Nov20 <- Nov20[-c(14)]
+Dec20 <- Dec20[-c(14)]
+Jan21 <- Jan21[-c(14)]
+Feb21 <- Feb21[-c(14)]
+Mar21 <- Mar21[-c(14)]
+Apr21 <- Apr21[-c(14)]
+May21 <- May21[-c(14)]
+Jun21 <- Jun21[-c(14)]
+Jul21 <- Jul21[-c(14)]
+```
+
+
+```{r}
+str(Aug20)
+str(Sep20)
+str(Oct20)
+str(Nov20)
+str(Dec20)
+str(Jan21)
+str(Feb21)
+str(Mar21)
+str(Apr21)
+str(May21)
+str(Jun21)
+str(Jul21)
+```
+### Changing the data type for started_at & eneded_at columns
+```{r}
+Aug20$started_at <- as.POSIXct(Aug20$started_at, format = "%m-%d-%y %H:%M")
+Aug20$ended_at <- as.POSIXct(Aug20$ended_at, format = "%m-%d-%y %H:%M")
+Sep20$started_at <- as.POSIXct(Sep20$started_at, format = "%m-%d-%y %H:%M")
+Sep20$ended_at <- as.POSIXct(Sep20$ended_at, format = "%m-%d-%y %H:%M")
+Oct20$started_at <- as.POSIXct(Oct20$started_at, format = "%m-%d-%y %H:%M")
+Oct20$ended_at <- as.POSIXct(Oct20$ended_at, format = "%m-%d-%y %H:%M")
+Nov20$started_at <- as.POSIXct(Nov20$started_at, format = "%m-%d-%y %H:%M")
+Nov20$ended_at <- as.POSIXct(Nov20$ended_at, format = "%m-%d-%y %H:%M")
+Dec20$started_at <- as.POSIXct(Dec20$started_at, format = "%m-%d-%y %H:%M")
+Dec20$ended_at <- as.POSIXct(Dec20$ended_at, format = "%m-%d-%y %H:%M")
+Jan21$started_at <- as.POSIXct(Jan21$started_at, format = "%m-%d-%y %H:%M")
+Jan21$ended_at <- as.POSIXct(Jan21$ended_at, format = "%m-%d-%y %H:%M")
+Feb21$started_at <- as.POSIXct(Feb21$started_at, format = "%m-%d-%y %H:%M")
+Feb21$ended_at <- as.POSIXct(Feb21$ended_at, format = "%m-%d-%y %H:%M")
+Mar21$started_at <- as.POSIXct(Mar21$started_at, format = "%m-%d-%y %H:%M")
+Mar21$ended_at <- as.POSIXct(Mar21$ended_at, format = "%m-%d-%y %H:%M")
+Apr21$started_at <- as.POSIXct(Apr21$started_at, format = "%m-%d-%y %H:%M")
+Apr21$ended_at <- as.POSIXct(Apr21$ended_at, format = "%m-%d-%y %H:%M")
+May21$started_at <- as.POSIXct(May21$started_at, format = "%m-%d-%y %H:%M")
+May21$ended_at <- as.POSIXct(May21$ended_at, format = "%m-%d-%y %H:%M")
+Jun21$started_at <- as.POSIXct(Jun21$started_at, format = "%m-%d-%y %H:%M")
+Jun21$ended_at <- as.POSIXct(Jun21$ended_at, format = "%m-%d-%y %H:%M")
+Jul21$started_at <- as.POSIXct(Jul21$started_at, format = "%m-%d-%y %H:%M")
+Jul21$ended_at <- as.POSIXct(Jul21$ended_at, format = "%m-%d-%y %H:%M")
+```
+### combining all the datasets into one
+
+```{r}
+bike_df <- rbind(Aug20, Sep20, Oct20, Nov20, Dec20, Jan21, Feb21, Mar21, Apr21, May21, Jun21, Jul21)
+str(bike_df)
+```
+```{r}
+bike_df <- mutate(bike_df, start_station_id = as.numeric(start_station_id), end_station_id = as.numeric(end_station_id)) 
+str(bike_df)
+
+```
+### Rename Columns
+
+```{r}
+bike_df <- bike_df %>% rename(trip_id = ride_id, ride_type = rideable_type, start_time = started_at, end_time= ended_at)
+glimpse(bike_df)
+```
+### Remove columns that are out of scope 
+
+```{r}
+bike_df <- subset(bike_df, select = -c(start_lat:end_lng))
+glimpse(bike_df)
+```
+
+
+
+```{r}
+bike_df <- bike_df%>% distinct()
+
+str(bike_df)
+```
+### Calculating ride length in minutes(New column)
+
+```{r}
+bike_df$ride_length <- as.double(bike_df$end_time- bike_df$start_time)/60
+str(bike_df)
+summary(bike_df$ride_length)
+```
+### Creating new columns(day_of_week, month, time)
+
+```{r}
+bike_df$day_of_week <- weekdays(bike_df$start_time)
+bike_df$month <- months(bike_df$start_time)
+bike_df$time <- hour(bike_df$start_time)
+str(bike_df)
+```
+### Removing the entries with ride length less than 0
+
+```{r}
+bike_df <- subset(bike_df, -ride_length<0)
+str(bike_df)
+```
+## Analysis
+
+### Some calculations on the dataset 
+
+```{r}
+bike_df %>% group_by (member_casual) %>% summarize(total_time = sum(ride_length))
+```
+
+```{r}
+summary(bike_df$ride_length)
+```
+
+
+```{r}
+bike_df %>% 
+  group_by(member_casual) %>% 
+  summarize(min_ride_length = min(ride_length), max_ride_length = max(ride_length), mean_ride_length = mean(ride_length), median_ride_length = median(ride_length))
+```
+
+
+
+```{r}
+bike_df %>% group_by(member_casual, day_of_week) %>% summarize(num_of_rides = n())     
+```
+### 
+
+```{r}
+bike_df %>%  group_by(member_casual, month) %>%  summarize(num_of_rides= n())
+bike_df %>%  group_by(member_casual, ride_type) %>% summarize(num_of_rides = n())
+```
+## Visualisation
+
+### Total Rides Vs. Day of the week
+
+```{r}
+options(scipen = 999)
+bike_df %>%  
+  group_by(member_casual, day_of_week) %>% 
+  summarize(num_of_rides = n()) %>% 
+  arrange(day_of_week) %>% 
+  ggplot(aes(x = day_of_week, y = num_of_rides, fill = member_casual))+
+  geom_col(position = "dodge", width = 0.5)+
+  labs(title ="Total rides Vs. Day of the week")+
+  scale_y_continuous()
+```
+The graph shows that the causal riders using the service more on saturdays and sundays, while for the rest of the week the demand is pretty average. On the other hand, the demand from the members is quite the same throughout the week and more than casual riders in the weekdays.
+
+
+
+### Total rides Vs. month
+
+```{r}
+bike_df %>%  
+  group_by(member_casual, month) %>% 
+  summarize(num_of_rides = n()) %>% 
+  arrange(desc(num_of_rides)) %>% 
+  ggplot(aes(x = month, y = num_of_rides, fill = member_casual))+
+  theme(axis.text.x = element_text(angle = 45))+
+  geom_col(position = "dodge", width = 0.5)+
+  labs(title ="Total rides Vs. month") +
+  scale_y_continuous()
+```
+From the visual we can understand that the demand was at peak from both causual and membership riders in the months of June and July, and it was low from December to March. Also per month we can see that membership riders take more rides than casual riders throughout the year.
+
+
+
+### Average number of rides Vs. day of week
+
+```{r}
+bike_df %>%  
+  group_by(member_casual, day_of_week) %>% 
+  summarize(avg_ride_length = mean(ride_length)) %>% 
+  ggplot(aes(x = day_of_week, y = avg_ride_length, fill = member_casual))+
+  theme(axis.text.x = element_text(angle = 45))+
+  geom_col(position = "dodge", width = 0.5)+
+  labs(title ="Average number of rides Vs. day of week")+
+  scale_y_continuous()
+```
+Throughout the week average ride length of casual riders is more than that of a member.On weekends the average ride length was the maximum from both the member types compared to weekdays.
+
+
+### Average number of rides Vs. month
+
+```{r}
+bike_df %>%  
+  group_by(member_casual, month) %>% 
+  summarize(avg_ride_length = mean(ride_length)) %>% 
+  ggplot(aes(x = month, y = avg_ride_length, fill = member_casual))+
+  theme(axis.text.x = element_text(angle = 45))+
+  geom_col(position = "dodge", width = 0.5)+
+  labs(title ="Average number of rides Vs. month")+
+  scale_y_continuous()
+```
+
+The average ride length by casual riders was more than membership riders throughout the year. It's more than 30 minutes for most of the months by casual riders and maximum in February accounting to 50 minutes. While membership riders average ride length never crossed 20 minutes.
+
+
+### Ride_type Vs Number of rides
+
+```{r}
+bike_df %>% 
+  group_by(ride_type, member_casual) %>% 
+  summarize(num_of_rides = n()) %>% 
+  ggplot(aes(x = ride_type, y = num_of_rides, fill= member_casual))+
+  theme(axis.text.x = element_text(angle = 45))+
+  geom_col(position = "dodge", width = 0.5)+
+  labs(title ="Ride_type Vs Number of rides")+
+  scale_y_continuous()
+
+```
+Casual riders use docked bikes more followed by classic bikes. While membership riders use classic bikes more while the demand was pretty much same for both electric and docked bikes.
+
+
+
+### Number of rides throughout the day
+
+```{r}
+bike_df %>% group_by(member_casual, time) %>% 
+ summarize(num_of_rides = n()) %>% 
+ ggplot(aes(x= time, y = num_of_rides, color = member_casual))+ 
+geom_line() + labs(title = "Number of rides throughout the day")
+scale_x_continuous()
+```
+
+The peak demand from both the types of riders was from 5 PM to 7 PM and the lowest was during the morning hours 2 AM to 4 AM. We can also see the seocnd peak from membership riders 7 AM to 9 AM.
+
+
+## Takeaways:
+
+$ The average ride length by casual riders is almost twice to that of membership riders throughout the day and months of the year.
+
+$ Casual riders use the service more during weekends, while the demand from membership riders was same for the entire week.
+
+$ Casual riders prefer docked bikes more while membership riders prefer classic bikes.
+
+
+## Recommendations:
+
+$ Provide attractive packages during the weekdays to attract more casual riders, as their demand is very low in weekdays.
+
+$ Neeed to provide memberships with some discount to ensure more casual riders take up the membership.
+
+
+
