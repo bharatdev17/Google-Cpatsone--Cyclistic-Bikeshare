@@ -2,9 +2,7 @@
 title: "Google Capstone - Cyclistic Bike Share"
 author: "Bharat"
 date: "01/09/2021"
-output:
-  pdf_document: default
-  html_document: default
+output: html_document
 ---
 
 # Introduction 
